@@ -4,6 +4,7 @@ class Fluent::Redis_SlowlogInput < Fluent::Input
   config_param :tag,      :string
   config_param :host,     :string,  :default => nil
   config_param :port,     :integer, :default => 6379
+  config_param :password, :string,  :default => nil
   config_param :logsize,  :integer,  :default => 128
   config_param :interval, :integer,  :default => 10
 
@@ -22,7 +23,7 @@ class Fluent::Redis_SlowlogInput < Fluent::Input
   def start
     super
     @redis = Redis.new(
-      :host => @host, 
+      :host => @host,
       :port => @port,
       :thread_safe => true
     )
@@ -48,7 +49,7 @@ class Fluent::Redis_SlowlogInput < Fluent::Input
     end
   end
 
-  def output( last_id = 0) 
+  def output( last_id = 0)
     slow_logs = []
     slow_logs = @redis.slowlog('get', logsize)
 
@@ -57,10 +58,10 @@ class Fluent::Redis_SlowlogInput < Fluent::Input
       unless log[0] > last_id
         next
       end
-      log_hash = { id: log[0], timestamp: Time.at(log[1]), exec_time: log[2], command: log[3] }
+      #log_hash = { id: log[0], timestamp: Time.at(log[1]), exec_time: log[2], command: log[3] }
+      log_hash = { id: log[0], timestamp: log[1], exec_time: log[2], command: log[3] }
       Fluent::Engine.emit(tag, Time.now.to_i, log_hash)
     end
     return log_id
   end
 end
-
