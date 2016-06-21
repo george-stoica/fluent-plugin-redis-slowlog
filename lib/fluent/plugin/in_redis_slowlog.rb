@@ -25,6 +25,7 @@ class Fluent::Redis_SlowlogInput < Fluent::Input
     @redis = Redis.new(
       :host => @host,
       :port => @port,
+      :password => @password,
       :thread_safe => true
     )
     pong = @redis.ping
