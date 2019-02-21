@@ -52,6 +52,10 @@ class Fluent::Redis_SlowlogInput < Fluent::Input
     end
   end
 
+  unless method_defined?(:router)
+    define_method("router") { Fluent::Engine }
+  end
+
   def output( last_id = 0)
     slow_logs = []
     slow_logs = @redis.slowlog('get', logsize)
@@ -63,7 +67,7 @@ class Fluent::Redis_SlowlogInput < Fluent::Input
       end
       #log_hash = { id: log[0], timestamp: Time.at(log[1]), exec_time: log[2], command: log[3] }
       log_hash = { id: log[0], timestamp: log[1], exec_time: log[2], command: log[3] }
-      Fluent::Engine.emit(tag, Time.now.to_i, log_hash)
+      router.emit(tag, Time.now.to_i, log_hash)
     end
     return log_id
   end
