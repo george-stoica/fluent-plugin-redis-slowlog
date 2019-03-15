@@ -60,6 +60,10 @@ class Fluent::Redis_SlowlogInput < Fluent::Input
     slow_logs = []
     slow_logs = @redis.slowlog('get', logsize)
 
+    if slow_logs.empty?
+      return 0
+    end
+
     log_id = slow_logs[0][0]
     slow_logs.reverse.each do |log|
       unless log[0] > last_id
