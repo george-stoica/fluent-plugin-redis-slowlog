@@ -18,7 +18,7 @@ class Fluent::Redis_SlowlogInput < Fluent::Input
 
   def configure(conf)
     super
-    @log_id = 0
+    @log_id = -1
     @get_interval = @interval
   end
 
