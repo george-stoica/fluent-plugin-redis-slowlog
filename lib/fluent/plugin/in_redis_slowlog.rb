@@ -59,7 +59,7 @@ class Fluent::Redis_SlowlogInput < Fluent::Input
     define_method("router") { Fluent::Engine }
   end
 
-  def output(last_id)
+  def output(last_id = -1)
     slow_logs = []
     slow_logs = @redis.slowlog('get', logsize)
 
