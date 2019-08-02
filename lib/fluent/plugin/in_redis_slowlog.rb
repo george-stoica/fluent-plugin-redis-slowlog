@@ -45,7 +45,7 @@ class Fluent::Redis_SlowlogInput < Fluent::Input
       begin
         pong = @redis.ping
         if pong == 'PONG'
-          @log_id = output( @log_id )
+          @log_id = output(@log_id)
         else
           log.error "fluent-plugin-redis-slowlog: ping failed"
         end
@@ -59,12 +59,12 @@ class Fluent::Redis_SlowlogInput < Fluent::Input
     define_method("router") { Fluent::Engine }
   end
 
-  def output( last_id = 0)
+  def output(last_id)
     slow_logs = []
     slow_logs = @redis.slowlog('get', logsize)
 
     if slow_logs.empty?
-      return 0
+      return -1
     end
 
     log_id = slow_logs[0][0]
