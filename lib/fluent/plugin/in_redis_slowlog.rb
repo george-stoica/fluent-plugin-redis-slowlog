@@ -30,12 +30,6 @@ class Fluent::Redis_SlowlogInput < Fluent::Input
       :password => @password,
       :thread_safe => true
     )
-    pong = @redis.ping
-    begin
-        unless pong == 'PONG'
-            raise "fluent-plugin-redis-slowlog: cannot connect redis"
-        end
-    end
     @watcher = Thread.new(&method(:watch))
   end
 
@@ -48,7 +42,16 @@ class Fluent::Redis_SlowlogInput < Fluent::Input
   def watch
     while true
       sleep @get_interval
-      @log_id = output( @log_id )
+      begin
+        pong = @redis.ping
+        if pong == 'PONG'
+          @log_id = output( @log_id )
+        else
+          log.error "fluent-plugin-redis-slowlog: ping failed"
+        end
+      rescue StandardError => e
+        log.error e.message
+      end
     end
   end
 
