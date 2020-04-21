@@ -72,8 +72,9 @@ class Fluent::Redis_SlowlogInput < Fluent::Input
       unless log[0] > last_id
         next
       end
-      #log_hash = { id: log[0], timestamp: Time.at(log[1]), exec_time: log[2], command: log[3] }
-      log_hash = { id: log[0], timestamp: log[1], exec_time: log[2], command: log[3] }
+
+      log_hash = { level: 'info', time: Time.at(log[1]).strftime("%Y-%m-%dT%H:%M:%S.%LZ"), message: {id: log[0], timestamp: log[1], exec_time: log[2], command: log[3]}}
+      
       router.emit(tag, Time.now.to_i, log_hash)
     end
     return log_id
