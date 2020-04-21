@@ -74,10 +74,10 @@ class Fluent::Redis_SlowlogInput < Fluent::Input
       end
 
       log_hash = { 
-        level: 'info', 
-        time: Time.at(log[1]).strftime("%Y-%m-%dT%H:%M:%S.%LZ"), 
-        message: "redis_host: #{@host}, redis_port: #{@port}, slowlog_id: #{log[0]}, timestamp: #{log[1]}, exec_time: #{log[2]}, command: #{log[3]}", 
-        context: { footprint: "" } 
+        level: 'info',
+        time: Time.at(log[1]).strftime("%Y-%m-%dT%H:%M:%S.%LZ"),
+        message: "redis_host: #{@host}, redis_port: #{@port}, slowlog_id: #{log[0]}, exec_time: #{log[2]}, command: #{log[3]}",
+        context: { footprint: "" }
       }
       
       router.emit(tag, Time.now.to_i, log_hash)
